@@ -65,15 +65,7 @@ const Credits: React.FC<CreditsProps> = ({ t, accentColor }) => {
       </div>
 
       <div className="mt-20 border-t border-gray-100 pt-12 text-center">
-        <h4 className="font-game text-2xl text-gray-700 mb-8">{t.specialThanks}</h4>
-        <div className="flex flex-wrap justify-center gap-4">
-          {t.thanksTags.map(tag => (
-            <span key={tag} className="px-6 py-3 bg-white border border-gray-100 text-gray-500 rounded-2xl text-sm font-bold shadow-sm hover:shadow-md transition-shadow">
-              {tag}
-            </span>
-          ))}
-        </div>
-        <div className="mt-16 max-w-lg mx-auto">
+        <div className="max-w-lg mx-auto">
           <p className="text-gray-400 text-sm italic leading-relaxed">
             {t.creditsFooter}
           </p>
