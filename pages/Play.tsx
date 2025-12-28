@@ -4,6 +4,8 @@ import { AppState, Translations, GamePhase } from '../types';
 import { MARKERS } from '../constants';
 
 const HOPS_SEQUENCE = [1, [2, 3], 4, [5, 6], 7, [8, 9], 10];
+const SAFE_MIN = 25;
+const SAFE_MAX = 75;
 
 const Row: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (
   <div className="flex justify-center gap-2">
@@ -29,32 +31,25 @@ export const Character: React.FC<{
     lg: 'w-16 h-16 md:w-20 md:h-20'
   };
 
-  // Gender-specific shirt colors as requested
-  const shirtColor = type === 'boy' ? '#3b82f6' : '#f472b6'; // Blue for Boy, Pink for Girl
+  const shirtColor = type === 'boy' ? '#3b82f6' : '#f472b6';
 
   return (
     <div className={`relative ${sizeClasses[size]} animate-character-bounce flex flex-col items-center justify-center`}>
-      {/* Shadow */}
       <div className="absolute -bottom-1 w-10 h-2.5 bg-black/10 rounded-full blur-[2px] animate-character-shadow"></div>
       
-      {/* Head Container */}
       <div className="relative z-20 -mb-2">
-         {/* Hair/Features based on Gender */}
          {type === 'boy' ? (
            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-4 h-5 bg-gray-800 rounded-full rotate-12"></div>
          ) : (
            <>
-             {/* Pigtails */}
              <div className="absolute -left-3 top-3 w-5 h-5 bg-gray-800 rounded-full shadow-sm"></div>
              <div className="absolute -right-3 top-3 w-5 h-5 bg-gray-800 rounded-full shadow-sm"></div>
-             {/* Small Bow - uses accent color */}
              <div className="absolute -top-2 right-0 w-4 h-4 rounded-full rotate-45 z-30 flex items-center justify-center" style={{ backgroundColor: accentColor }}>
                 <div className="w-1 h-1 bg-white/50 rounded-full"></div>
              </div>
            </>
          )}
 
-         {/* Style Accessories */}
          {style === 'sporty' && (
            <div className="absolute top-2 left-0 right-0 h-2 bg-white/90 z-30 border-y border-black/5 flex items-center justify-center">
               <div className="w-full h-[1px] bg-gray-200"></div>
@@ -64,9 +59,7 @@ export const Character: React.FC<{
            <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-xl z-30 drop-shadow-sm animate-pulse">👑</div>
          )}
          
-         {/* Face */}
          <div className={`${faceSizeClasses[size]} bg-[#ffe4e1] rounded-full border-2 border-black/5 shadow-sm flex flex-col items-center justify-center overflow-hidden`}>
-            {/* Eyes Section */}
             <div className="flex gap-2.5 mt-1">
               <div className="w-2.5 h-2.5 bg-gray-900 rounded-full relative animate-blink">
                  <div className="absolute top-0.5 right-0.5 w-1 h-1 bg-white rounded-full"></div>
@@ -75,7 +68,6 @@ export const Character: React.FC<{
                  <div className="absolute top-0.5 right-0.5 w-1 h-1 bg-white rounded-full"></div>
               </div>
             </div>
-            {/* Blushing Cheeks */}
             <div className="flex justify-between w-full px-2 mt-1">
               <div className="w-2.5 h-1.5 bg-pink-300 rounded-full opacity-60 animate-pulse"></div>
               <div className="w-2.5 h-1.5 bg-pink-300 rounded-full opacity-60 animate-pulse"></div>
@@ -83,12 +75,10 @@ export const Character: React.FC<{
          </div>
       </div>
 
-      {/* Body (Outfit) */}
       <div 
         className="relative z-10 w-10 h-9 md:w-12 md:h-11 rounded-t-[1.8rem] rounded-b-xl border-b-4 border-black/15 shadow-md flex items-center justify-center overflow-hidden"
         style={{ backgroundColor: shirtColor }}
       >
-        {/* Style Details */}
         {style === 'casual' && (
           <div className="w-6 h-3 border border-white/20 rounded-t-sm rounded-b-md mt-4 bg-white/10"></div>
         )}
@@ -105,7 +95,6 @@ export const Character: React.FC<{
            </div>
         )}
         
-        {/* Arms/Hands */}
         <div className="absolute -left-1 top-3 w-2.5 h-5 rounded-full border-r-2 border-black/5" style={{ backgroundColor: shirtColor }}></div>
         <div className="absolute -right-1 top-3 w-2.5 h-5 rounded-full border-l-2 border-black/5" style={{ backgroundColor: shirtColor }}></div>
       </div>
@@ -165,11 +154,11 @@ const Play: React.FC<{ appState: AppState; t: Translations }> = ({ appState, t }
   const [message, setMessage] = useState('');
   const [foulReason, setFoulReason] = useState<string | null>(null);
   const [foulEffect, setFoulEffect] = useState(false);
-  const [balancePos, setBalancePos] = useState(0); 
+  const [balancePos, setBalancePos] = useState(50); 
   const [balanceDirection, setBalanceDirection] = useState(1);
 
   const selectedMarker = MARKERS.find(m => m.id === appState.playerMarker);
-  const isInGreenZone = balancePos >= 25 && balancePos <= 75;
+  const isInGreenZone = balancePos >= SAFE_MIN && balancePos <= SAFE_MAX;
 
   useEffect(() => {
     generateNewMarker();
@@ -183,7 +172,6 @@ const Play: React.FC<{ appState: AppState; t: Translations }> = ({ appState, t }
   useEffect(() => {
     let interval: number;
     if (phase === 'HOPPING_OUT' || phase === 'HOPPING_BACK' || phase === 'PICKING_UP') {
-      // Faster base speed and scaling
       const speed = 0.8 + (level * 0.25);
       interval = window.setInterval(() => {
         setBalancePos(prev => {
@@ -229,17 +217,10 @@ const Play: React.FC<{ appState: AppState; t: Translations }> = ({ appState, t }
         }
         return nextLives;
     });
-    // Snappier foul duration
     setTimeout(() => {
       setFoulEffect(false);
       setFoulReason(null);
     }, 800);
-  };
-
-  const isBoxInStep = (box: number, step: number | number[] | undefined) => {
-    if (step === undefined) return false;
-    if (Array.isArray(step)) return step.includes(box);
-    return step === box;
   };
 
   const handleBoxClick = (clickedBox: number) => {
@@ -249,7 +230,7 @@ const Play: React.FC<{ appState: AppState; t: Translations }> = ({ appState, t }
       setScore(0);
       setPhase('THROWING');
       setCurrentStepIndex(-1);
-      setBalancePos(0);
+      setBalancePos(50);
       generateNewMarker();
       return;
     }
@@ -330,12 +311,12 @@ const Play: React.FC<{ appState: AppState; t: Translations }> = ({ appState, t }
   const completeRound = () => {
     setPhase('FINISHED_ROUND');
     setScore(prev => prev + 500);
-    // Faster level transition
     setTimeout(() => {
       if (level < 10) {
         setLevel(prev => prev + 1);
         setPhase('THROWING');
         setCurrentStepIndex(-1);
+        setBalancePos(50);
         generateNewMarker();
       } else setPhase('GAME_OVER');
     }, 1000);
@@ -378,14 +359,27 @@ const Play: React.FC<{ appState: AppState; t: Translations }> = ({ appState, t }
         </div>
         {(phase === 'HOPPING_OUT' || phase === 'HOPPING_BACK' || phase === 'PICKING_UP') ? (
           <div className="px-2">
-            <div className="h-6 w-full bg-gray-100 rounded-full relative overflow-hidden border border-gray-200 flex items-center">
-              <div className="absolute inset-0 flex items-center px-4 justify-between pointer-events-none opacity-20">
-                <span className="text-[8px] font-black text-red-500 uppercase">{t.balanceUnsafe}</span>
-                <span className="text-[8px] font-black text-gray-400 uppercase">{t.balanceSafe}</span>
-                <span className="text-[8px] font-black text-red-500 uppercase">{t.balanceUnsafe}</span>
-              </div>
-              <div className="absolute left-[25%] w-[50%] h-full bg-green-500/10"></div>
-              <div className={`absolute h-4 w-4 rounded-full transition-all duration-16 border-2 ${isInGreenZone ? 'bg-green-500 border-green-600' : 'bg-red-500 border-red-600'}`} style={{ left: `calc(${balancePos}% - 8px)` }}></div>
+            <div className="h-8 w-full bg-gray-100 rounded-full relative overflow-hidden border border-gray-200 flex items-center shadow-inner">
+              {/* Background labels precisely aligned to logic */}
+              <div className="absolute left-[5%] text-[8px] font-black text-red-400 uppercase pointer-events-none">{t.balanceUnsafe}</div>
+              <div className="absolute left-[50%] -translate-x-1/2 text-[8px] font-black text-green-700 uppercase pointer-events-none z-10">{t.balanceSafe}</div>
+              <div className="absolute right-[5%] text-[8px] font-black text-red-400 uppercase pointer-events-none">{t.balanceUnsafe}</div>
+              
+              {/* Green Zone Visual - Perfectly matched to SAFE_MIN / SAFE_MAX */}
+              <div 
+                className="absolute h-full bg-green-500/15 border-x border-green-500/20" 
+                style={{ left: `${SAFE_MIN}%`, width: `${SAFE_MAX - SAFE_MIN}%` }}
+              ></div>
+              
+              {/* Ticks at the exact boundaries */}
+              <div className="absolute h-full w-[1px] bg-gray-300 z-0" style={{ left: `${SAFE_MIN}%` }}></div>
+              <div className="absolute h-full w-[1px] bg-gray-300 z-0" style={{ left: `${SAFE_MAX}%` }}></div>
+
+              {/* Indicator Dot - No CSS transition to ensure zero-lag alignment */}
+              <div 
+                className={`absolute h-5 w-5 rounded-full border-2 shadow-sm z-20 ${isInGreenZone ? 'bg-green-500 border-green-600' : 'bg-red-500 border-red-600'}`} 
+                style={{ left: `calc(${balancePos}% - 10px)` }}
+              ></div>
             </div>
           </div>
         ) : (
@@ -452,13 +446,18 @@ const Play: React.FC<{ appState: AppState; t: Translations }> = ({ appState, t }
           95% { transform: scaleY(0.1); }
         }
         .animate-shake { animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both; }
-        /* Faster bounce animations */
         .animate-character-bounce { animation: character-bounce 0.5s infinite ease-in-out; }
         .animate-character-shadow { animation: character-shadow 0.5s infinite ease-in-out; }
         .animate-blink { animation: blink 4s infinite; }
       `}</style>
     </div>
   );
+};
+
+const isBoxInStep = (box: number, step: number | number[] | undefined) => {
+  if (step === undefined) return false;
+  if (Array.isArray(step)) return step.includes(box);
+  return step === box;
 };
 
 export default Play;

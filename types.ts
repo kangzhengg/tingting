@@ -1,4 +1,3 @@
-
 export type Language = 'en' | 'ms' | 'zh' | 'ta';
 
 export type GamePhase = 'THROWING' | 'HOPPING_OUT' | 'HOPPING_BACK' | 'PICKING_UP' | 'FINISHED_ROUND' | 'GAME_OVER';
@@ -38,6 +37,7 @@ export interface Translations {
   markerStone: string;
   markerShell: string;
   markerCoin: string;
+  markerHouse: string;
   boyLabel: string;
   girlLabel: string;
   styleCasual: string;
@@ -52,6 +52,7 @@ export interface Translations {
   roleMotion: string;
   roleTranslator: string;
   roleBeta: string;
+  roleAdvisor: string;
   thanksTags: string[];
   // Learn Page
   stepLabel: string;
@@ -92,7 +93,7 @@ export interface RuleStep {
 export interface AppState {
   language: Language;
   accentColor: string;
-  playerMarker: 'stone' | 'shell' | 'coin';
+  playerMarker: 'stone' | 'shell' | 'coin' | 'house';
   characterType: 'boy' | 'girl';
   characterStyle: 'casual' | 'sporty' | 'fancy';
 }

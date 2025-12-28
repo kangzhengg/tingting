@@ -4,59 +4,80 @@ import { Translations } from '../types';
 
 interface CreditsProps {
   t: Translations;
+  accentColor: string;
 }
 
-const Credits: React.FC<CreditsProps> = ({ t }) => {
-  const contributors = [
-    { name: "Alex Rivera", role: t.roleCreative, avatar: "🎨" },
-    { name: "Sophie Chen", role: t.roleLead, avatar: "💻" },
-    { name: "Marcus Thorne", role: t.roleUX, avatar: "✨" },
-    { name: "Elena Gilbert", role: t.roleMotion, avatar: "🌀" },
-    { name: "Julian Voss", role: t.roleTranslator, avatar: "🌍" },
-    { name: "The Playground Kids", role: t.roleBeta, avatar: "🎈" }
-  ];
-
+const Credits: React.FC<CreditsProps> = ({ t, accentColor }) => {
   return (
-    <div className="max-w-3xl mx-auto py-16 px-4">
+    <div className="max-w-4xl mx-auto py-16 px-4">
       <div className="text-center mb-16">
-        <h1 className="font-game text-5xl text-gray-800 mb-4">{t.creditsTitle}</h1>
-        <p className="text-xl text-gray-500 font-medium">{t.creditsSubtitle}</p>
+        <h1 className="font-game text-6xl text-gray-800 mb-6">{t.creditsTitle}</h1>
+        <div className="max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 font-medium leading-relaxed">
+            {t.creditsSubtitle}
+          </p>
+        </div>
       </div>
 
-      <div className="space-y-4">
-        {contributors.map((person, idx) => (
-          <div 
-            key={person.name}
-            className="group flex items-center justify-between p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all hover:scale-[1.01]"
-          >
-            <div className="flex items-center gap-6">
-              <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-2xl group-hover:bg-blue-50 transition-colors">
-                {person.avatar}
-              </div>
-              <div>
-                <h3 className="font-bold text-gray-800 text-lg">{person.name}</h3>
-                <p className="text-gray-400 text-sm font-semibold uppercase tracking-wider">{person.role}</p>
-              </div>
+      <div className="grid grid-cols-1 gap-8 mb-16">
+        {/* Primary Priority: Advisor */}
+        <div 
+          className="group relative overflow-hidden flex flex-col md:flex-row items-center justify-between p-10 bg-white rounded-[3rem] border-4 border-gray-100 shadow-xl transition-all hover:scale-[1.02]"
+          style={{ borderColor: 'rgba(96, 165, 250, 0.2)' }}
+        >
+          <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+            <div className="w-24 h-24 bg-blue-50 rounded-[2rem] flex items-center justify-center text-5xl shadow-inner group-hover:rotate-6 transition-transform">
+              🏛️
             </div>
-            <div className="hidden sm:block text-gray-200 font-game text-2xl">
-              #{idx + 1}
+            <div>
+              <p className="text-blue-500 font-bold uppercase tracking-[0.2em] text-sm mb-2">{t.roleAdvisor}</p>
+              <h3 className="font-game text-3xl text-gray-800">Badan Warisan Malaysia</h3>
             </div>
           </div>
-        ))}
+          <div className="hidden lg:block">
+            <div className="w-16 h-16 rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-300 font-game text-2xl">
+              01
+            </div>
+          </div>
+        </div>
+
+        {/* Developer Info Card - Refactored to be softer and themed */}
+        <div 
+          className="p-10 bg-white/60 backdrop-blur-sm rounded-[3rem] border-4 shadow-xl relative overflow-hidden transition-all hover:scale-[1.01]"
+          style={{ borderColor: `${accentColor}33` }}
+        >
+          <div className="absolute top-0 right-0 p-8 opacity-5 text-8xl pointer-events-none">🎓</div>
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+            <div className="w-20 h-20 rounded-[1.5rem] flex items-center justify-center text-4xl shadow-sm" style={{ backgroundColor: `${accentColor}15` }}>
+              👨‍💻
+            </div>
+            <div>
+              <h4 className="font-game text-2xl mb-2 flex items-center justify-center md:justify-start gap-3 text-gray-800">
+                <span style={{ color: accentColor }}>UM</span> CSIT Group 15 T1
+              </h4>
+              <div className="space-y-1 text-gray-500 font-semibold text-sm">
+                <p>Faculty of Computer Science & Information Technology</p>
+                <p>University Malaya</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="mt-20 border-t border-gray-100 pt-12 text-center">
-        <h4 className="font-game text-2xl text-gray-700 mb-6">{t.specialThanks}</h4>
+        <h4 className="font-game text-2xl text-gray-700 mb-8">{t.specialThanks}</h4>
         <div className="flex flex-wrap justify-center gap-4">
           {t.thanksTags.map(tag => (
-            <span key={tag} className="px-5 py-2 bg-gray-100 text-gray-500 rounded-full text-sm font-bold">
+            <span key={tag} className="px-6 py-3 bg-white border border-gray-100 text-gray-500 rounded-2xl text-sm font-bold shadow-sm hover:shadow-md transition-shadow">
               {tag}
             </span>
           ))}
         </div>
-        <p className="mt-12 text-gray-400 text-sm italic">
-          {t.creditsFooter}
-        </p>
+        <div className="mt-16 max-w-lg mx-auto">
+          <p className="text-gray-400 text-sm italic leading-relaxed">
+            {t.creditsFooter}
+          </p>
+        </div>
       </div>
     </div>
   );

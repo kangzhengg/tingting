@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Language, AppState } from './types';
@@ -14,7 +13,7 @@ const App: React.FC = () => {
   const [appState, setAppState] = useState<AppState>({
     language: 'en',
     accentColor: '#fb923c', // Default Peach
-    playerMarker: 'stone',
+    playerMarker: 'house',
     characterType: 'boy',
     characterStyle: 'casual'
   });
@@ -64,7 +63,7 @@ const App: React.FC = () => {
               updateCharacterStyle={updateCharacterStyle}
               t={t} 
             />} />
-            <Route path="/credits" element={<Credits t={t} />} />
+            <Route path="/credits" element={<Credits t={t} accentColor={appState.accentColor} />} />
           </Routes>
         </main>
 
